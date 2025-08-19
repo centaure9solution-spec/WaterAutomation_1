@@ -156,6 +156,12 @@
   </div>
 
   <!-- Dashboard -->
+  
+  <div id="dashboard">
+  <div class="relay-container" id="dataContainer"></div>
+  <button id="logoutBtn">Logout</button>
+  </div>
+
   <div id="dashboard">
     <div class="relay-container">
       <div class="relay-card">
@@ -188,7 +194,7 @@
   </div>
 
   <footer>
-    Created by Tech StudyCell
+    Created by Rohit Khurange
   </footer>
 
   <!-- Firebase SDKs -->
@@ -244,41 +250,80 @@
         alert("Invalid email or password.");
       }
     });
+	
+	
+  function loadSoilProjectData() {
+  const db = firebase.database();
+  const dataRef = db.ref("/SoilProjectAuto");
+  const container = document.getElementById("dataContainer");
 
-    function startRelayControl() {
-      const db = firebase.database();
+  dataRef.on("value", snapshot => {
+    const data = snapshot.val();
+    container.innerHTML = ""; // Clear old cards
 
-      const relays = [
-        { id: 1, path: "relay1" },
-        { id: 2, path: "relay2" },
-        { id: 3, path: "relay3" },
-        { id: 4, path: "relay4" },
-      ];
+    Object.entries(data).forEach(([key, value]) => {
+      const card = document.createElement("div");
+      card.className = "relay-card";
+      card.innerHTML = `
+        <h2>${key}</h2>
+        <p>Value: <span>${value}</span></p>
+      `;
+      container.appendChild(card);
+    });
+  });
+}
+	document.getElementById("logoutBtn").onclick = () => {
+	  firebase.auth().signOut().then(() => {
+		dashboard.style.display = "none";
+		loginForm.style.display = "block";
+		document.getElementById("email").value = "";
+		document.getElementById("password").value = "";
+	  });
+	};
 
-      relays.forEach(relay => {
-        const statusText = document.getElementById(`status${relay.id}`);
-        const toggleButton = document.getElementById(`btn${relay.id}`);
-        const relayRef = db.ref("/" + relay.path);
 
-        relayRef.on("value", (snapshot) => {
-          const state = snapshot.val();
-          statusText.innerText = state ? "ON" : "OFF";
-          toggleButton.style.backgroundColor = state ? "green" : "blue";
-        });
+    function loadSoilProjectData() {
+	  const db = firebase.database();
+	  const dataRef = db.ref("/SoilProjectAuto");
+	  const container = document.getElementById("dataContainer");
 
-        toggleButton.onclick = () => {
-          relayRef.get().then(snap => {
-            relayRef.set(!snap.val());
-          });
-        };
-      });
+	  dataRef.on("value", snapshot => {
+		const data = snapshot.val();
+		container.innerHTML = "";
 
-      document.getElementById("allOffBtn").onclick = () => {
-        relays.forEach(relay => {
-          db.ref("/" + relay.path).set(false);
-        });
-      };
-    }
+		Object.entries(data).forEach(([key, value]) => {
+		  const card = document.createElement("div");
+		  card.className = "relay-card";
+
+		  let controlHTML = "";
+		  if (key === "motorCtrl" || key === "hwmode") {
+			const label = key === "motorCtrl" ? "Motor Control" : "Hardware Mode";
+			const btnColor = value === "1" ? "green" : "blue";
+			const btnLabel = value === "1" ? "Turn OFF" : "Turn ON";
+
+			controlHTML = `
+			  <button style="background-color:${btnColor}" onclick="toggleControl('${key}', '${value}')">${btnLabel}</button>
+			`;
+		  }
+
+		  card.innerHTML = `
+			<h2>${key}</h2>
+			<p>Value: <span>${value}</span></p>
+			${controlHTML}
+		  `;
+		  container.appendChild(card);
+		});
+	  });
+	}
+	
+	function toggleControl(param, currentValue) {
+	  const db = firebase.database();
+	  const newValue = currentValue === "1" ? "0" : "1";
+	  db.ref("/SoilProjectAuto/" + param).set(newValue)
+		.then(() => console.log(`${param} updated to ${newValue}`))
+		.catch(err => alert("Update failed: " + err.message));
+	}
+
 
     document.getElementById("logoutBtn").onclick = () => {
       firebase.auth().signOut()
