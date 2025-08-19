@@ -160,15 +160,13 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBFzQJ8a1AuHJABCDvg6UJMxjmD_XPPPOg",
-      authDomain: "esp32-relay-control-01.firebaseapp.com",
-      databaseURL: "https://esp32-relay1-control-02-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "esp32-relay-control-01",
-      storageBucket: "esp32-relay-control-02.firebasestorage.app",
-      messagingSenderId: "1057958003190",
-      appId: "1:1057958003190:web:d4200d0e99b5ed880507d7"
-    };
+     apiKey: "AIzaSyAO3hjlIVEbaRvKIdDnVqkDhv-e_KOMIVA",
+  authDomain: "waterautomation-f6add.firebaseapp.com",
+  databaseURL: "https://waterautomation-f6add-default-rtdb.firebaseio.com",
+  projectId: "waterautomation-f6add",
+  storageBucket: "waterautomation-f6add.firebasestorage.app",
+  messagingSenderId: "927690654870",
+  appId: "1:927690654870:web:2d67d767d86c29ef2daeb7"
 
     firebase.initializeApp(firebaseConfig);
 
@@ -176,8 +174,8 @@
     const dashboard = document.getElementById("dashboard");
     const loginBtn = document.getElementById("loginBtn");
 
-    const allowedEmail = "abc@gmail.com";
-    const allowedPassword = "90009550";
+    const allowedEmail = "rajnigandhasakshiheights@gmail.com";
+    const allowedPassword = "9028308880";
 
     loginBtn.addEventListener("click", () => {
       const email = document.getElementById("email").value.trim();
@@ -243,3 +241,4 @@
         dashboard.style.display = "none";
         loginForm.style.display = "block";
         document.getElementById("email").
+
